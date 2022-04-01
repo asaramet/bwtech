@@ -1,0 +1,233 @@
+/* Global reset of paddings and margins for all HTML elements */
+* { margin:0; padding: 0; }
+
+body {
+  width: 99vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Maven Pro', sans-serif;
+}
+
+p, li, td, th, .download-link {
+  font-family: 'Maven Pro', sans-serif;
+}
+
+a, h1, h2, h3, h4 {
+  font-family: 'Josefin Slab', serif;
+}
+
+footer {
+  text-align: center;
+  width: 80vw;
+  opacity: 60%;
+  margin-top: auto;
+}
+
+header {
+  justify-content: space-between;
+  width: 80vw;
+  margin-top: 2vh;
+}
+
+header > a > img {
+  height: 10vh;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/*
+.image, table {
+  margin: 4vh 3vw 2vh;
+}
+
+ul, ol {
+  list-style-position: inside;
+}
+
+pre {
+  border: dotted 1px;
+  padding: 5px 1%;
+}
+
+pre, .download-dev {
+  width: 88%;
+  margin-left: 3vw;
+  margin-top: 3vh;
+}
+
+table {
+  caption-side: top;
+  width: 88%;
+  border-collapse: collapse;
+}
+table.bash {
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+}
+table.bash td {
+  border-top: 1px solid black;
+  border-collapse: collapse;
+  padding-left: 25px;
+  height: 25px;
+}
+table.bash td:first-child {
+  width: 25%;
+  border-right: dashed 1px black;
+}
+
+table.describe td, th {
+  border: 1px solid black;
+  padding-left: 5px;
+  height: 40px;
+}
+table.describe th {
+  background-color: #e6e6e6;
+}
+table.describe td:first-child, th:first-child {
+  width: 35%;
+}
+
+table#queue td:first-child, th:first-child {
+  width: 10%;
+}
+
+table#queue td:nth-child(2), th:nth-child(2) {
+  width: 5%;
+}
+
+table#queue td:nth-child(3), th:nth-child(3) {
+  width: 25%;
+}
+
+table#queue td:last-child, th:last-child {
+  width: 60%;
+}
+
+#title {
+  width: 75vw;
+  margin: 10px 0;
+  justify-content: flex-end;
+  color: #00aadc;
+}
+
+#banner {
+  height: auto;
+  width: 40vw;
+  opacity: 0.8;
+}
+
+#nav-menu {
+  width: 75vw;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#content {
+  margin-top: 2vh;
+  width: 75vw;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.btn-content{
+  display: inline-block;
+  padding: 2vh 0 4vh 1vw;
+}
+
+.btn-content button {
+  color: #b6163d;
+  border-color: #b6163d;
+}
+
+.btn-content button:hover {
+  background-color: #00aadc;
+}
+
+.download-dev {
+  margin-bottom: 2vh;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.download-link {
+  color: #b6163d;
+  border: 1px solid;
+  padding: 10px;
+}
+
+.download-link:hover {
+  color: #00aadc;
+}
+
+.video {
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+}
+
+.navbar .navbar-collapse .navbar-nav .nav-item {
+  color: #b6163d;
+}
+
+.navbar .navbar-collapse .navbar-nav .nav-item.active {
+  color: #193058;
+}
+
+.navbar .navbar-collapse .navbar-nav .nav-item:hover {
+  color: #00aadc;
+}
+
+hr {
+  background-color: #b6163d;
+}
+
+strong {
+  color: #b6163d;
+}
+
+.flow-chart {
+  padding: 50px 100px;
+}
+
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 1400px) {
+  header, #title, #content {
+    width: 90vw;
+  }
+
+  #banner {
+    width: 50vw;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  #logo {
+    width: 12vw;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  #banner {
+    width: 60vw;
+  }
+
+@media only screen and (max-width: 450px) {
+  #logo {
+    width: 15vw;
+  }
+}
+*/

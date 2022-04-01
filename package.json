@@ -1,0 +1,22 @@
+{
+  "name": "wiki_he",
+  "version": "1.0.0",
+  "description": "My blog in HTML only",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./bin/www",
+    "convert": "bash ./scripts/buildConvert.sh && node ./prod/convert.js",
+    "local": "npm run convert && ./bin/config.sh",
+    "prod": "npm run convert && ./bin/config.sh -p",
+    "sync": "npm run prod && ./bin/sync.sh && ./bin/config.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "marked": "^2.1.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.8"
+  }
+}

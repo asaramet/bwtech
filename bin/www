@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+"use strict";
+
+const app = require('./app');
+const debug = require('debug');
+const http = require('http');
+//const fs = require('fs');
+
+const port = 3000;
+const server = http.createServer(app).listen(port, (err) => {
+  if (err) {
+    console.error(err);
+  }
+  console.log(`Listen on port: ${port}`);
+});
+
+function onListening() {
+  const addr = server.address();
+  let bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  debug(`Listening on ${bind}`);
+}
+
+server.on('listening', onListening);
