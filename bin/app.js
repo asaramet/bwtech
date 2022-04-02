@@ -11,7 +11,7 @@ app.use(express.static('./prod'));
 
 app.use(function(req, res, next) {
   //fs.createReadStream('./bwGRiD/index.html').pipe(res);
-  fs.createReadStream('./prod/index.html').pipe(res);
+  fs.createReadStream('./prod/main/index.html').pipe(res);
 });
 
 module.exports = app;

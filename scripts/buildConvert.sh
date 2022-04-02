@@ -13,7 +13,7 @@ SECTIONS=`cd $MD_FOLDER && ls -d */ | cut -f1 -d'/'`
 
 # List of sections in format ["x","y"]
 SECTIONS_LIST=`for i in $SECTIONS; do echo \"$i\"; done`
-SECTIONS_LIST="["`echo $SECTIONS_LIST | sed "s/ /, /"`"]"
+SECTIONS_LIST="["`echo $SECTIONS_LIST | sed "s/ /, /g"`"]"
 
 js_file()
 {
@@ -28,10 +28,8 @@ const path = require('path');
 // Convert function. Input: 1.MD file, 2.converted HTML file
 function convert(inMD, outHTML) {
   // Convert the inMD file and write to outHTML
-  fs.writeFile(outHTML, marked(fs.readFileSync(inMD, "utf8")), (err)=>{
-    if (err) {
-      console.log(err);
-    }
+  fs.writeFile(outHTML, marked(fs.readFileSync(inMD, "utf8")), {flag:'a'}, (err)=>{
+    if (err) {console.log(err);}
   });
 }
 
@@ -49,7 +47,33 @@ sections.forEach(section => {
     files.forEach( file => {
       const mdFile = path.join("./md_files", section, file);
       const htmlFile = path.join("./prod", section, path.basename(file, 'md').concat('html'));
+
+      // write the head
+      fs.writeFile(htmlFile, fs.readFileSync(path.join("./source", "html", "std", "head.html")), (err) => {
+        if (err) {console.log(err);}
+      });
+
+      // convert and append data
       convert(mdFile, htmlFile);
+
+      // add footer
+      fs.writeFile(htmlFile, '<footer id="footer"></footer>', {flag:'a'}, (err) => {
+        if (err) {console.log(err);}
+      });
+
+      // add JS scripts
+      fs.writeFile(htmlFile, '<script type="text/javascript" src="js/main.js"></script>', {flag:'a'}, (err) => {
+        if (err) {console.log(err);}
+      });
+      fs.writeFile(htmlFile, '<script type="text/javascript" src="js/' + section + '.js"></script>', {flag:'a'}, (err) => {
+        if (err) {console.log(err);}
+      });
+
+      // append the foot
+      fs.appendFile(htmlFile, fs.readFileSync(path.join("./source", "html", "std", "foot.html")), (err) => {
+        if (err) {console.log(err);}
+      });
+
     });
   });
 });

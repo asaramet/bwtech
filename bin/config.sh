@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 MD=`dirname $(readlink -f $0)`
-SERVER="https://www2.hs-esslingen.de/~asaramet/"
+#SERVER="https://www2.hs-esslingen.de/~asaramet/"
 
 BASE_LOCAL="<base href=\"..\">"
 BASE_INDEX_LOCAL="<base href=\".\">"

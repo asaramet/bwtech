@@ -23,6 +23,30 @@ async function addFooter() {
   footer.innerHTML = await fetchHtmlAsText(stdFolder + "footer.html");
 }
 
+// get page pathname
+let currentLocation = window.location.pathname;
+
+/* Clear active class from a navbar menu*/
+function clearActive(navbar) {
+  // reset active link to null
+  let active = navbar.getElementsByClassName("active");
+  active[0].className = active[0].className.replace("active", "");
+}
+
+/* Add 'active' to a navbar link */
+function setActive(elementID) {
+  document.getElementById(elementID).className += " active";
+}
+
+// load navigation menu
+function loadNavHpc(sectionID) {
+  loadHtml("navSections", stdFolder + "navSections.html").then(function () {
+    let navbar = document.getElementById("navTab");
+    clearActive(navbar);
+    setActive(sectionID);
+  });
+}
+
 function main() {
   // load header
   loadHtml("header", stdFolder + "header.html");
@@ -30,6 +54,16 @@ function main() {
 
   // attach footer
   addFooter();
+
+  /* Load specific nav menu and HTML elements */
+  if (currentLocation.includes("/Networking")) {
+    loadNavHpc("Networking");
+  } else if (currentLocation.includes("/Security")) {
+    loadNavHpc("Security");
+  }
+  else {
+    loadNavHpc("home");
+  }
 }
 
 main();
