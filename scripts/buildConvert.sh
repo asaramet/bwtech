@@ -24,14 +24,6 @@ const marked = require('marked'); // converts markedown to html
 const fs = require('fs');
 const path = require('path');
 
-// Convert function. Input: 1.MD file, 2.converted HTML file
-function convert(inMD, outHTML) {
-  // Convert the inMD file and write to outHTML
-  fs.writeFile(outHTML, marked(fs.readFileSync(inMD, "utf8")), {flag:'a'}, (err)=>{
-    if (err) {console.log(err);}
-  });
-}
-
 // List of sections i.e folders in md_files
 EOF
 
@@ -48,36 +40,35 @@ sections.forEach(section => {
       const htmlFile = path.join("./prod", section, path.basename(file, 'md').concat('html'));
 
       // write the head
-      fs.writeFile(htmlFile, fs.readFileSync(path.join("./source", "html", "std", "head.html")), (err) => {
-        if (err) {console.log(err);}
-      });
-
-      // convert and append data
-      convert(mdFile, htmlFile);
-
-      // add footer
-      fs.writeFile(htmlFile, '<footer id="footer"></footer>', {flag:'a'}, (err) => {
-        if (err) {console.log(err);}
-      });
-
-      // add JS scripts
-      fs.writeFile(htmlFile, '<script type="text/javascript" src="js/main.js"></script>', {flag:'a'}, (err) => {
+      fs.writeFile(htmlFile, fs.readFileSync(path.join("./prod", "std", "head.html")), (err) => {
         if (err) {console.log(err);}
 
-        if (section != "main") { // ignore adding the main.js if the section with this name exists
-          fs.writeFile(htmlFile, '<script type="text/javascript" src="js/' + section + '.js"></script>', {flag:'a'}, (err) => {
+        // Convert the mdFile and write output to htmlFile
+        fs.writeFile(htmlFile, marked(fs.readFileSync(mdFile, "utf8")), {flag:'a'}, (err) => {
+          if (err) {console.log(err);}
+
+          // add footer and JS scripts
+          fs.writeFile(htmlFile, \`</section>
+            <footer id="footer"></footer>
+            <script type="text/javascript" src="js/main.js"></script>\`, {flag:'a'}, (err) => {
             if (err) {console.log(err);}
 
-            // append the foot
-            fs.appendFile(htmlFile, fs.readFileSync(path.join("./source", "html", "std", "foot.html")), (err) => {
-              if (err) {console.log(err);}
-            });
+            if (section != "main") { // ignore adding the main.js if the section with this name exists
+              fs.writeFile(htmlFile, '<script type="text/javascript" src="js/' + section + '.js"></script>', {flag:'a'}, (err) => {
+                if (err) {console.log(err);}
+
+                // append the foot
+                fs.appendFile(htmlFile, fs.readFileSync(path.join("./prod", "std", "foot.html")), (err) => {
+                  if (err) {console.log(err);}
+                });
+              });
+            } else {
+              fs.appendFile(htmlFile, fs.readFileSync(path.join("./prod", "std", "foot.html")), (err) => {
+                if (err) {console.log(err);}
+              });
+            }
           });
-        } else {
-          fs.appendFile(htmlFile, fs.readFileSync(path.join("./source", "html", "std", "foot.html")), (err) => {
-            if (err) {console.log(err);}
-          });
-        }
+        });
       });
     });
   });
@@ -203,12 +194,10 @@ EOF
 foot_html()
 {
   cat << EOF
-    <!-- JavaScript Bundle with Popper -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    -->
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   </body>
 </html>
 EOF
@@ -230,13 +219,12 @@ head_html()
     <title>saramet</title>
     <base href="..">
     <link rel="stylesheet" href="./css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Slab:wght@400;700&family=Maven+Pro:wght@400;700&display=swap"
-      rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Prompt:wght@300&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
-    <!--
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   </head>
   <body>
 
@@ -250,15 +238,22 @@ head_html()
       <div id="navItems"></div>
     </section>
 
-    <!-- Loaded objects on the home page -->
+    <!-- Content -->
+    <section class="content">
+
 EOF
 }
 
 header_html()
 {
   cat << EOF
-<a href="."><img src="img/me.jpg" alt="My portrait Gorillaz style"></a>
-<h1>Bandwith Tetrachloro-p-hydroquinone</h1>
+<div id="logo">
+  <a href="."><img src="img/me.png" alt="My portrait Gorillaz style"></a>
+</div>
+
+<div id="title">
+  <h1>Bandwith Tetrachloro-p-hydroquinone</h1>
+</div>
 EOF
 }
 
@@ -276,7 +271,7 @@ navSections_html()
   </button>
   <div class="collapse navbar-collapse" id="navTab">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" id="home" href="index.html">Home</a>
+      <a class="nav-item nav-link active" id="home" href="index.html">Home</a>
 EOF
 
   for section in ${SECTIONS}; do
@@ -298,8 +293,8 @@ navSection_html()
   cat << EOF
 <nav class='navbar navbar-expand-lg navbar-light'>
   <!-- toggle button for responsive design -->
-  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbar${section}Info'
-    aria-controls='#navbar${section}Info' aria-expanded='false' aria-label='Toggle navigation'>
+  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbar${section}'
+    aria-controls='#navbar${section}' aria-expanded='false' aria-label='Toggle navigation'>
     <span class='navbar-toggler-icon'></span>
   </button>
   <div class='collapse navbar-collapse' id='navbar${section}'>
@@ -319,14 +314,143 @@ EOF
 EOF
 }
 
+css_file()
+{
+  cat << EOF
+/* Global reset of paddings and margins for all HTML elements */
+* { margin:0; padding: 0; }
+
+body {
+  width: 99vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Maven Pro', sans-serif;
+}
+
+h3, h4, p, li, td, th, .download-link {
+  font-family: 'Prompt', sans-serif;
+}
+
+a, h1, h2 {
+  font-family: 'Architects Daughter', cursive;
+}
+
+strong {
+  color: #b6163d;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+footer {
+  text-align: center;
+  width: 80vw;
+  opacity: 60%;
+  margin-top: auto;
+}
+
+header {
+  justify-content: space-between;
+  width: 80vw;
+  padding: 2vh 0;
+}
+
+/* Banner */
+#logo {
+  width: 10vw;
+}
+
+#logo > a > img {
+  height: 10vh;
+}
+
+#title {
+  width: 60vw;
+}
+
+#title > h1 {
+  text-align: right;
+}
+
+/* Navbar */
+.navbar .navbar-collapse .navbar-nav .nav-item {
+  color: #b6163d;
+}
+
+.navbar .navbar-collapse .navbar-nav .nav-item.active {
+  color: #193058;
+}
+
+.navbar .navbar-collapse .navbar-nav .nav-item:hover {
+  color: #00aadc;
+}
+
+#nav-menu {
+  width: 75vw;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#navSections, #navItems {
+  width: 35vw;
+}
+
+#navTab {
+  justify-content: flex-start;
+}
+
+.content {
+  margin-top: 2vh;
+  width: 75vw;
+  flex-direction: column;
+  align-items: flex-start;
+}
+EOF
+
+  for section in ${SECTIONS}; do
+    [[ section == "main" ]] && continue
+    cat << EOF
+#navbar${section} {
+  justify-content: flex-end;
+}
+EOF
+  done
+}
+
+# Images
+[[ -d ${OUT_FOLDER} ]] && rm -fr ${OUT_FOLDER}
+mkdir -p ${OUT_FOLDER}
+cp -r ${MD}/source/img ${OUT_FOLDER}
+
 # Create html folders
 for i in $SECTIONS; do mkdir -p ${OUT_FOLDER}/$i; done
 
+# HTML files
+mkdir -p ${OUT_FOLDER}/std
+foot_html > ${OUT_FOLDER}/std/foot.html
+footer_html > ${OUT_FOLDER}/std/footer.html
+head_html > ${OUT_FOLDER}/std/head.html
+header_html > ${OUT_FOLDER}/std/header.html
 # Build the convert.js File
 convert_js > "${OUT_FOLDER}/convert.js"
+node ${OUT_FOLDER}/convert.js
+
+# Build html nav sections
+navSections_html > ${OUT_FOLDER}/std/navSections.html
+for i in ${SECTIONS}; do
+  [[ $i == "main" ]] && continue
+  navSection_html $i > ${OUT_FOLDER}/std/nav${i}.html
+done
+
 
 # Build the main.js File
-[[ ! -d ${OUT_FOLDER}/js ]] && mkdir -p ${OUT_FOLDER}/js
+mkdir -p ${OUT_FOLDER}/js
 main_js > ${OUT_FOLDER}/js/main.js
 
 # Build sections specfic js files
@@ -335,14 +459,6 @@ for i in ${SECTIONS}; do
   section_js $i > ${OUT_FOLDER}/js/${i}.js
 done
 
-# HTML files
-[[ -d ${OUT_FOLDER}/std ]] && rm -fr ${OUT_FOLDER}/std && mkdir -p ${OUT_FOLDER}/std
-foot_html > ${OUT_FOLDER}/std/foot.html
-footer_html > ${OUT_FOLDER}/std/footer.html
-head_html > ${OUT_FOLDER}/std/head.html
-header_html > ${OUT_FOLDER}/std/header.html
-navSections_html > ${OUT_FOLDER}/std/navSections.html
-for i in ${SECTIONS}; do
-  [[ $i == "main" ]] && continue
-  navSection_html $i > ${OUT_FOLDER}/std/nav${i}.html
-done
+# CSS
+mkdir -p ${OUT_FOLDER}/css
+css_file > ${OUT_FOLDER}/css/styles.css

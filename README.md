@@ -6,6 +6,7 @@ The **articles** are Markdown files in 'md_files' folder that are automatically 
 
 ## Keep it simple:
 - Frontend HTML, CSS, JS.
+- Bootstrap for some sweets.
 - In Backend Node and JS when possible.
 - Bash and AWK is an option.
 - Python if nothing else works.
