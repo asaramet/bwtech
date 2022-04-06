@@ -10,3 +10,9 @@ The **articles** are Markdown files in 'md_files' folder that are automatically 
 - In Backend Node and JS when possible.
 - Bash and AWK is an option.
 - Python if nothing else works.
+
+## How to build it:
+```
+$ npm run build
+```
+will build the './prod' folder, a collection of html, css and js files, that can be used as a Webpage Frontend. The data text for that page is converted from the Markdown files in '.md_files'.
