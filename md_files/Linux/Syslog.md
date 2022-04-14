@@ -1,7 +1,9 @@
 ## Syslog in Linux
 
+For multiple Linux server administration, cloud, as well as debugging, networking and security reasons, it makes sense to collect all the logs on a dedicated system. Syslog offers an easy and robust solution. It is usually a default option on Linux systems and can be easily configured for a variety of devices, starting with networking routers and management systems up to Windows machines.  
+
 ### syslogd daemon
-Captures system events and logs them in Syslog. Uses Port _TCP 514_
+Captures system events and logs them in Syslog. Uses Ports **_TCP/UDP 514_**.
 
 Projects:
   - syslog - year 1980
@@ -42,7 +44,7 @@ The selector field contains facilities (aka services) and priorities, separated 
 - `cron` - clock daemon (`cron` and `at`)
 - `daemon` - system daemons without separate facility value
 - `kern` - kernel
-- `local0` through `local7` - local use
+- `local0` through `local7` - local use; defined by user
 - `local7` - boot
 - `lpr` - line printer subsystem
 - `mail` - mail subsystem
@@ -53,14 +55,14 @@ The selector field contains facilities (aka services) and priorities, separated 
 
 #### Priorities
 In ascending level of urgency:
-1. debug
-2. info
-3. notice
-4. warning
-5. err
-6. crit
-7. alert
-8. emerg
+1. debug /7/
+2. info /6/
+3. notice /5/
+4. warning /4/
+5. err /3/
+6. crit /2/
+7. alert /1/
+8. emerg /0/
 9. \* - all level messages
 10. none - no messages to be logged
 
@@ -106,6 +108,7 @@ Ex:
 # Display emergency messages using wall
 *.=emerg            *
 ```
+
 ### Examples
 The line:
 
@@ -147,4 +150,75 @@ news.notice                -/var/log/news/news.notice
 *.=debug;\
 	auth,authpriv.none;\
 	news.none;mail.none      -/var/log/debug
+```
+
+### Configure a syslog Linux server with rsyslog
+
+A syslog server has to keep a large amount of logs over time, therefore it is a good practice to create a separate partition for `/var` and allocate a large amount of disk space or create a LVM group.
+
+The following lines in `/etc/rsyslog.conf` will set the `rsyslog` deamon to listen to respective ports:
+- UDP 514:
+```
+$ModLoad imudp
+$UDPServerRun 514
+```
+
+- TCP 514:
+```
+$ModLoad imudp
+$InputTCPServerRun 514
+```
+
+#### Template for logs receipt
+Usually written just before the `GLOBAL DIRECTIVES`
+
+1. Create a template with `$template` keyword, followed by the template name and template itself separated by a comma (`,`).
+  Examples:
+  - A template named `RemoteLogsFolder`, which will define the remote logs destination depending on machine hostname and app name:
+
+```
+$template RemoteLogsFolder,"-/var/log/%HOSTNAME%/%PROGRAMNAME%.log"
+```
+
+  - A template named `LogsFolderByIP`, defining the destination file name after the remote machine IP:
+
+```
+$template     LogsFolderByIP,"/var/log/%FROMHOST-IP%.log"
+```  
+
+2. Define the actions to be saved using the template, with the same schema as required for `rsyslog.conf` file, i.e `[facility].[priority] ?RemoteLogsFolder`
+  Examples:
+  - Apply the template to all the logs:
+
+```
+*.*                                         ?RemoteLogsFolder
+```
+
+  - Redirect all the info logs except mail, cron and kernel logs to the folder defined by template
+
+```
+*.info,mail.none,cron.none,kernel.none      ?RemoteLogsFolder
+```
+
+3. Do not process the log messages further after they have been redirected to the folders defined in the template. Meaning, to not save an extra copy of the logs as local messages, which is a normal procedure of `rsyslog`. For that, use the following rule:
+
+```
+&~
+```
+
+In the end, the appended lines will look something like:
+```
+$template       RemoteLogsFolder,"-/var/log/%HOSTNAME%/%PROGRAMNAME%.log"
+*.*             ?RemoteLogsFolder
+&~
+```
+
+#### Verify the daemon
+`netstat` will help to display the listening ports of the application. Ex:
+```
+$ netstat -tulpn | grep rsyslog
+udp        0      0 0.0.0.0:33154           0.0.0.0:*                           364/rsyslogd        
+udp        0      0 0.0.0.0:514             0.0.0.0:*                           364/rsyslogd        
+udp        0      0 0.0.0.0:52748           0.0.0.0:*                           364/rsyslogd        
+udp6       0      0 :::514                  :::*                                364/rsyslogd        
 ```
