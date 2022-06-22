@@ -222,3 +222,6 @@ udp        0      0 0.0.0.0:514             0.0.0.0:*                           
 udp        0      0 0.0.0.0:52748           0.0.0.0:*                           364/rsyslogd        
 udp6       0      0 :::514                  :::*                                364/rsyslogd        
 ```
+
+### Tools to read and filter system logs
+- [journalctl](Linux/journalctl.html)
